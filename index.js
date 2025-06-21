@@ -3,10 +3,11 @@ const { readFileSync } = require('fs')
 const { createServer } = require('http')
 const server = createServer()
 const port = process.env.PORT || 3000
+let nextId = 1
 const users = [
-  { id: 1, login: 'Bob', password: '1234' },
-  { id: 2, login: 'Alice', password: '5678' },
-  { id: 3, login: 'Charlie', password: 'abcd' },
+  { id: nextId++, login: 'Bob', password: '1234' },
+  { id: nextId++, login: 'Alice', password: '5678' },
+  { id: nextId++, login: 'Charlie', password: 'abcd' },
 ]
 global.users = users
 const types = {
@@ -48,7 +49,40 @@ function serveFile(request, response) {
   }
 }
 
-function handleApi(request, response) {
+async function handleApi(request, response) {
   response.setHeader('Content-Type', types.json)
-  response.end(JSON.stringify(users))
+
+  const { method, url } = request
+  const route = url.replace('/api/', "")
+  const endpoint = method + ':' + route
+
+  switch (endpoint) {
+    case 'GET:users':
+      response.end(JSON.stringify(users))
+      break
+
+    case 'POST:user':
+      const { login, password } = await getBody(request)
+
+      addUser(login, password)
+      response.end(JSON.stringify({ success: true }))
+      break
+
+    default:
+      response.statusCode = 404
+      response.end(JSON.stringify({ error: 'Incorrect endpoint' }))
+  }
+}
+
+async function getBody(stream) {
+  const chunks = []
+  for await (const chunk of stream) {
+    chunks.push(chunk)
+  }
+  return JSON.parse(Buffer.concat(chunks))
+}
+
+function addUser(login, password) {
+  const user = { id: nextId++, login, password }
+  users.push(user)
 }
