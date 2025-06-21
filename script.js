@@ -1,11 +1,13 @@
-const users = [
-  { id: 1, login: 'Bob', password: '1234' },
-  { id: 2, login: 'Alice', password: '5678' },
-  { id: 3, login: 'Charlie', password: 'abcd' },
-]
 const userList = document.getElementById('users')
 
+const users = await getUsers()
+
 showUsers()
+
+async function getUsers() {
+  const respone = await fetch('/api/users')
+  return respone.json()
+}
 
 function showUsers() {
   const items = []
