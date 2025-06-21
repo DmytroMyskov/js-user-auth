@@ -9,7 +9,7 @@ server.listen(port, () => log(`Server at http://localhost:${port}`))
 server.addListener('request', handleRequest)
 
 function handleRequest(request, response) {
-  const path = request.url.slice(1)
+  const path = request.url.slice(1) || 'index.html'
 
   console.log(path)
 
