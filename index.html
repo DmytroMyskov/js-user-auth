@@ -10,14 +10,35 @@
 </head>
 
 <body>
-  <form id="new-user">
-    <input type="text" name="login" placeholder="login">
-    <input type="text" name="password" placeholder="password">
-    <button>Add</button>
-  </form>
+  <section class="users">
+    <details open>
+      <summary>CRUD Users</summary>
 
-  <ul id="users">
-  </ul>
+      <form id="new-user">
+        <input type="text" name="login" placeholder="login">
+        <input type="text" name="password" placeholder="password">
+        <button>Add</button>
+      </form>
+
+      <ul id="users">
+      </ul>
+    </details>
+  </section>
+
+  <hr>
+
+  <section class="notes">
+    <details open>
+      <summary>CRUD Notes</summary>
+
+      <form id="new-note">
+        <textarea name="text" placeholder="text"></textarea>
+        <button>add</button>
+      </form>
+
+      <ul id="notes"></ul>
+    </details>
+  </section>
 </body>
 
 </html>
