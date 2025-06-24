@@ -4,6 +4,7 @@ const userList = document.getElementById('users')
 let users = await getUsers()
 
 form.onsubmit = handleSubmit
+userList.onclick = handleClick
 
 showUsers()
 
@@ -20,10 +21,34 @@ async function handleSubmit(e) {
   showUsers()
 }
 
+async function handleClick(e) {
+  if (e.target.tagName != "BUTTON") return
+
+  const btn = e.target
+  const item = btn.closest('li')
+  const { id } = item.dataset
+
+  await deleteUser(+id)
+
+  users = await getUsers()
+  showUsers()
+}
+
 async function addUser(login, password) {
   const data = { login, password }
   const init = {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    body: JSON.stringify(data),
+  }
+
+  return fetch('/api/user', init)
+}
+
+async function deleteUser(id) {
+  const data = { id }
+  const init = {
+    method: 'DELETE',
     headers: { 'Content-Type': 'application/json; charset=utf-8' },
     body: JSON.stringify(data),
   }
@@ -48,6 +73,9 @@ function showUsers() {
 
 function buildUserItem(user) {
   const li = document.createElement('li')
-  li.append(user.login)
+  const btn = document.createElement('button')
+  li.dataset.id = user.id
+  btn.innerHTML = '&times;'
+  li.append(user.login, ' ', btn)
   return li
 }

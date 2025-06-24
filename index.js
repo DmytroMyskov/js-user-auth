@@ -68,6 +68,13 @@ async function handleApi(request, response) {
       response.end(JSON.stringify({ success: true }))
       break
 
+    case 'DELETE:user':
+      const { id } = await getBody(request)
+
+      deleteUser(id)
+      response.end(JSON.stringify({ success: true }))
+      break
+
     default:
       response.statusCode = 404
       response.end(JSON.stringify({ error: 'Incorrect endpoint' }))
@@ -85,4 +92,10 @@ async function getBody(stream) {
 function addUser(login, password) {
   const user = { id: nextId++, login, password }
   users.push(user)
+}
+
+function deleteUser(id) {
+  const i = users.findIndex(user => user.id === id)
+  if (i === -1) return
+  users.splice(i, 1)
 }
